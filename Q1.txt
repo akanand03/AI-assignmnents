@@ -1,0 +1,53 @@
+class tictactoe:
+    def __init__(self):
+        self.brd = [[' ' for _ in range(3)] for _ in range(3)]  # Initialize a 3x3 board with blanks
+
+    def print_brd(self):
+        for row in self.brd:
+            print('|'.join(row))
+            print('-' * 5)
+        print()  # Add an additional newline for better separation between boards
+
+    def update_brd(self, row, col, symbol):
+        if self.brd[row][col] == ' ':
+            self.brd[row][col] = symbol
+        else:
+            print("This position is already taken.")
+
+    def calculate_s(self):    # s is for the strength
+        s_x = 0
+        s_o = 0
+
+        for i in range(3):
+            s_x += self.chk_line(self.brd[i], 'X')
+            s_o += self.chk_line(self.brd[i], 'O')
+            s_x += self.chk_line([self.brd[j][i] for j in range(3)], 'X')
+            s_o += self.chk_line([self.brd[j][i] for j in range(3)], 'O')
+
+        s_x += self.chk_line([self.brd[i][i] for i in range(3)], 'X')
+        s_o += self.chk_line([self.brd[i][i] for i in range(3)], 'O')
+        s_x += self.chk_line([self.brd[i][2-i] for i in range(3)], 'X')
+        s_o += self.chk_line([self.brd[i][2-i] for i in range(3)], 'O')
+
+        return s_x - s_o
+
+    def chk_line(self, line, symbol): 
+        if line.count(symbol) == 3:
+            return 3
+        elif line.count(symbol) == 2 and line.count(' ') == 1:
+            return 2
+        elif line.count(symbol) == 1 and line.count(' ') == 1:
+            return 1
+        else:
+            return 0
+
+game = tictactoe()
+game.update_brd(0, 0, 'X')  # Player 1 places 'X' at position (0, 0)
+game.update_brd(1, 1, 'X')  # Player 2 places 'X' at position (1, 1)
+game.update_brd(2, 2, 'X')  # Player 1 places 'X' at position (2, 2)
+
+# Print the current board
+game.print_brd()
+
+# Calculate and print the current strength
+print("Current strength: ", game.calculate_s())
